@@ -1,9 +1,7 @@
-"use server";
+'use server';
 
-import { createSSRClient } from "@/services/supabase";
-import { AuthError } from "@supabase/supabase-js";
-// import { revalidatePath } from "next/cache";
-// import { redirect } from "next/navigation";
+import { createSSRClient } from '@/services/supabase';
+import { AuthError } from '@supabase/supabase-js';
 
 type State = {
   message: string;
@@ -15,28 +13,25 @@ export async function signup(prevState: State, formData: FormData) {
   const supabase = await createSSRClient();
 
   const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
   };
 
   if (!data.email || !data.password) {
     return {
-      message: "Email and password are required",
-      error: new AuthError("Email and password are required"),
+      error: new AuthError('Email and password are required'),
       isSuccess: false,
+      message: 'Email and password are required',
     };
   }
 
   const { error } = await supabase.auth.signUp(data);
 
   return error
-    ? { message: "", error, isSuccess: false }
+    ? { error, isSuccess: false, message: '' }
     : {
-        message: "Account created successfully, please verify your email",
         error: null,
         isSuccess: true,
+        message: 'Account created successfully, please verify your email',
       };
-
-  // revalidatePath("/", "layout");
-  // redirect("/login", );
 }

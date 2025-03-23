@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eslint/compat": "^1.2.7",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@supabase/ssr": "^0.6.1",
@@ -32,6 +33,13 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
+    "eslint-config-prettier": "^10",
+    "eslint-plugin-perfectionist": "^4",
+    "eslint-plugin-prettier": "^5",
+    "eslint-plugin-react": "^7",
+    "eslint-plugin-react-hooks": "^5",
+    "eslint-plugin-react-refresh": "^0",
+    "eslint-plugin-sonarjs": "^3.0.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
