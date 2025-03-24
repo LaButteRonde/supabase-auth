@@ -1,5 +1,7 @@
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { createSSRClient } from '@/services/supabase';
+import { AvatarFallback } from '@radix-ui/react-avatar';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -7,17 +9,33 @@ import { signOut } from './actions';
 
 export default async function Home() {
   const supabase = await createSSRClient();
-  const { data: user } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+  const { user } = data || { user: null };
 
-  console.log('🚀 ~ Home ~ user:', user?.user);
   const authButtons = (
-    <div className='absolute top-4 right-4 flex gap-4'>
-      <Link href='/signup'>
-        <Button variant='outline'>Sign up</Button>
-      </Link>
-      <Link href='/login'>
-        <Button variant='outline'>Sign in</Button>
-      </Link>
+    <div className='absolute top-4 right-4 flex gap-2 items-center justify-center'>
+      {!user?.email_confirmed_at ? (
+        <>
+          <Link href='/signup'>
+            <Button variant='outline'>Sign up</Button>
+          </Link>
+          <Link href='/login'>
+            <Button variant='outline'>Sign in</Button>
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link href='/profile'>
+            <Button variant='outline'>Profile</Button>
+          </Link>
+          <Avatar>
+            <AvatarImage src={user?.user_metadata?.avatar_url} referrerPolicy='no-referrer' />
+            <AvatarFallback className='flex justify-center items-center bg-primary text-primary-foreground w-10'>
+              {user?.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </>
+      )}
     </div>
   );
   return (
@@ -27,13 +45,12 @@ export default async function Home() {
         <Image className='dark:invert' src='/next.svg' alt='Next.js logo' width={180} height={38} priority />
         <ol className='list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]'>
           <li className='mb-2 tracking-[-.01em]'>
-            {user?.user && (
+            {user ? (
               <span>
-                Hi, welcome to the app {user?.user?.email}. Your are logged in with{' '}
-                <span className='font-bold'>{user?.user?.user_metadata?.provider}</span> Auth provider.
+                Hi, welcome to the app {user?.email}. Your are logged in with{' '}
+                <span className='font-bold'>{user?.app_metadata?.provider}</span> Auth provider.
               </span>
-            )}
-            {!user.user && (
+            ) : (
               <span>
                 Hi, welcome to supabase auth example.{' '}
                 <span className='font-bold'>Configure your supabase Auth and google cloud</span> to try signup, signin

@@ -21,8 +21,8 @@ export async function login(formData: FormData) {
     redirect('/error');
   }
 
-  revalidatePath('/dashboard', 'layout');
-  redirect('/dashboard');
+  revalidatePath('/', 'layout');
+  redirect('/');
 }
 
 export async function signinProvider(provider: Provider) {
