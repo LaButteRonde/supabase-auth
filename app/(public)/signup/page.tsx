@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { signup } from './actions';
+import { signup, signupProvider } from './actions';
 
 const initialState: {
   message: string;
@@ -23,7 +23,6 @@ export default function SignupPage() {
   const router = useRouter();
 
   const [state, formAction] = useActionState(signup, initialState);
-  console.log('🚀 ~ SignupPage ~ state:', state);
 
   useEffect(() => {
     if (!state.isSuccess && !state.error) {
@@ -49,6 +48,8 @@ export default function SignupPage() {
           <AuthForm
             type='signup'
             onEmailAuth={formAction}
+            onThirdPartyAuth={signupProvider}
+            thirdPartyAuth={['google']}
             title='Welcome to ...'
             description='Create your account with your Email'
           />

@@ -1,8 +1,10 @@
+'use client';
+
 import { AuthForm } from '@/components/auth-form';
 import { GalleryVerticalEnd } from 'lucide-react';
 import Link from 'next/link';
 
-import { login } from './actions';
+import { login, signinProvider } from './actions';
 
 export default function LoginPage() {
   // TODO: Change this to your app name
@@ -22,8 +24,10 @@ export default function LoginPage() {
             <AuthForm
               type='login'
               onEmailAuth={login}
+              onThirdPartyAuth={signinProvider}
+              thirdPartyAuth={['google']}
               title='Welcome back to ...'
-              description='Login with your Email'
+              description='Login with Google'
             />
           </div>
         </div>

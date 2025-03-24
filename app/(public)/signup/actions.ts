@@ -1,7 +1,8 @@
 'use server';
 
 import { createSSRClient } from '@/services/supabase';
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError, Provider } from '@supabase/supabase-js';
+import { redirect } from 'next/navigation';
 
 type State = {
   message: string;
@@ -34,4 +35,29 @@ export async function signup(prevState: State, formData: FormData) {
         isSuccess: true,
         message: 'Account created successfully, please verify your email',
       };
+}
+
+export async function signupProvider(provider: Provider) {
+  if (!provider)
+    return {
+      error: new AuthError('You need to set a provider'),
+      isSuccess: false,
+      message: '',
+    };
+
+  const supabase = await createSSRClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    options: { redirectTo: 'http://localhost:3000/auth/callback' },
+    provider: provider as Provider,
+  });
+  if (error)
+    return {
+      error,
+      isSuccess: false,
+      message: '',
+    };
+
+  if (data.url) {
+    redirect(data.url);
+  }
 }

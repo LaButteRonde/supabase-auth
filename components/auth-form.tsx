@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { Provider } from '@supabase/supabase-js';
 import { ReactNode } from 'react';
 
 const googleIcon = (
@@ -29,18 +30,18 @@ const ThirdPartyButton = ({
 };
 
 const thirdPartyAuthData = {
-  APPLE: { icon: null, id: 'apple', label: 'Login with Apple' },
-  GITHUB: { icon: null, id: 'github', label: 'Login with Github' },
-  GOOGLE: { icon: googleIcon, id: 'google', label: 'Login with Google' },
-  MICROSOFT: { icon: null, id: 'microsoft', label: 'Login with Microsoft' },
-  TWITTER: { icon: null, id: 'twitter', label: 'Login with Twitter' },
+  apple: { icon: null, id: 'apple', label: 'Login with Apple' },
+  azure: { icon: null, id: 'microsoft', label: 'Login with Microsoft' },
+  github: { icon: null, id: 'github', label: 'Login with Github' },
+  google: { icon: googleIcon, id: 'google', label: 'Login with Google' },
 };
 
 type AuthFormProps = {
   title: ReactNode;
   description: ReactNode;
-  thirdPartyAuth?: ('GOOGLE' | 'APPLE' | 'MICROSOFT' | 'TWITTER' | 'GITHUB')[];
+  thirdPartyAuth?: Provider[];
   type: 'signup' | 'login';
+  onThirdPartyAuth?: (provider: Provider) => void;
   onEmailAuth: (formData: FormData) => void;
 } & React.ComponentProps<'div'>;
 
@@ -48,6 +49,7 @@ export function AuthForm({
   className,
   description,
   onEmailAuth,
+  onThirdPartyAuth,
   thirdPartyAuth,
   title,
   type = 'login',
@@ -55,9 +57,14 @@ export function AuthForm({
 }: AuthFormProps) {
   const thirdPartyAuthButtons = !thirdPartyAuth ? null : (
     <div className='flex flex-col gap-4'>
-      {thirdPartyAuth.map((auth) => (
-        <ThirdPartyButton key={auth} {...thirdPartyAuthData[auth]} />
-      ))}
+      {onThirdPartyAuth &&
+        thirdPartyAuth.map((auth) => (
+          <ThirdPartyButton
+            key={auth}
+            onClick={() => onThirdPartyAuth(auth)}
+            {...thirdPartyAuthData[auth as keyof typeof thirdPartyAuthData]}
+          />
+        ))}
     </div>
   );
 
